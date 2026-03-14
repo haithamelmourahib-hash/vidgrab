@@ -21,6 +21,9 @@ jobs:
       - name: Install FFmpeg
         run: choco install ffmpeg -y
 
+      - name: Prepare static folder
+        run: mkdir static && move index.html static/
+
       - name: Build EXE
         run: pyinstaller --onefile --noconsole --name VidGrab --add-data "static;static" --hidden-import flask --hidden-import flask_cors --hidden-import yt_dlp main.py
 
