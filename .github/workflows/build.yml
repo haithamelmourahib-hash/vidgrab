@@ -1,0 +1,33 @@
+name: Build VidGrab for Windows
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install flask flask-cors yt-dlp pyinstaller
+
+      - name: Install FFmpeg
+        run: |
+          choco install ffmpeg -y
+
+      - name: Build EXE
+        run: |
+          pyinstaller --onefile --noconsole --name VidGrab --add-data "static;static" --hidden-import flask --hidden-import flask_cors --hidden-import yt_dlp main.py
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v3
+        with:
+          name: VidGrab-Windows
+          path: dist/VidGrab.exe
